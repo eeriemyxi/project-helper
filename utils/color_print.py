@@ -2,9 +2,10 @@ from colorama import Fore, Style, init
 
 
 class Color:
-    '''
+    """
     This class exists to make printing colored text easier.
-    '''
+    """
+
     def __init__(self) -> None:
         init()
         self.colors = [color for color in dir(Fore) if not color.startswith("_")]
