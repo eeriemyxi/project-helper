@@ -19,7 +19,7 @@ class CommandHandler:
         while True:
             user_info = self.get_user_input()
             print(user_info)
-            self.log.warn(user_info)
+            self.log.info(user_info)
             if user_info == 'exit':
                 self.logger.close()
                 exit()
