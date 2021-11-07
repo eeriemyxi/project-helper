@@ -8,7 +8,8 @@ color = Color()
 
 
 def main():
-    color.print("red", "hello world!")
+    color.print("green", "Welcome.")
+    color.print('green', 'Type `help` for help.')
     command_handler.start()
 
 

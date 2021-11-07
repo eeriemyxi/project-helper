@@ -9,7 +9,6 @@ class Color:
     def __init__(self) -> None:
         init()
         self.colors = [color for color in dir(Fore) if not color.startswith("_")]
-        # self.colors = list(filter(lambda color: not color.startswith('_'), dir(Fore)))
 
     def print(self, color: str, *objects, **kwargs) -> None:
         """
@@ -18,9 +17,13 @@ class Color:
         Parameters
         ----------
         color: `str`
-            Set the color to print text with.
+            - Set the color to print the text with.
+
         *objects:
-            Objects to print.
+            - Objects to print.
+
+        **kwargs
+            - Other parameters of `print` built-in function.
         """
         color = color.upper()
         assert hasattr(
