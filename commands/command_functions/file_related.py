@@ -13,7 +13,7 @@ def showdir(attrs):
         print("red", "This directory is empty.")
         return
     for file in files:
-        print('magenta', str(file.stat().st_size/1000000)+' MB', end=" | ")
+        print('cyan', str(file.stat().st_size/1000000)+' MB', end=" | ")
         print("yellow", "DIR" if path.joinpath(file).is_dir() else "FILE", end=" > ")
         print("green", file.name)
 
