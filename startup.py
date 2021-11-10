@@ -1,5 +1,4 @@
-import os
-
+import pathlib
 from utils._logging import Logger
 from utils.color_print import Color
 from utils.database import Database
@@ -42,7 +41,7 @@ class Startup:
             if self.status == 1:
                 exit()
             else:
-                os.remove("database.db")
+                pathlib.Path("database.db").unlink()
                 exit()
 
         self.log.info("The user is new.")
@@ -72,7 +71,7 @@ class Startup:
         )
         path = self.get_user_input(
             "Please choose an empty folder if possible",
-            lambda x: os.path.isdir(x),
+            lambda x: pathlib.Path(x).is_dir(),
             "Either the path doesn't exist or it is not pointing to a directory.",
             confirm=True,
             restart=(self.welcome, None),

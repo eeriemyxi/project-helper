@@ -1,5 +1,7 @@
+from __future__ import annotations
 import importlib.util
 import inspect
+import pathlib
 from dataclasses import dataclass
 from pkgutil import iter_modules
 from typing import Callable, Dict, List, Tuple
@@ -38,9 +40,8 @@ class CommandHandler:
         self.log = self.logger.log
         self.color = Color()
         self.commands: List[CommandInfo] = list()
-        self.current_directory = self.db.get("path")
-        self.cwd = self.current_directory
-        self.project_path = self.db.get("path")
+        self.cwd = pathlib.Path(self.db.get("path"))
+        self.project_path = pathlib.Path(self.db.get("path"))
         self.get_user_input = tools.get_user_input
 
     def add_command(
@@ -194,13 +195,17 @@ class CommandHandler:
         self.log.info("Loading commands.")
         count = self.load_commands()
         commands_count = len(self.commands)
-        self.log.info("Loading commands successful. Files loaded: %s. Commands loaded: %s", count, commands_count)
+        self.log.info(
+            "Loading commands successful. Files loaded: %s. Commands loaded: %s",
+            count,
+            commands_count,
+        )
         self.log.info("Starting main loop.")
         while True:
             self._handle_user_input()
 
     def _handle_user_input(self) -> None:
-        user_input = self.get_user_input(self.current_directory)
+        user_input = self.get_user_input(str(self.cwd))
         user_input_command_name = user_input.split()[0]
         args = user_input.split()[1:]
         self.log.info("User input: %s", user_input)

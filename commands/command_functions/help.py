@@ -1,6 +1,3 @@
-from typing import List
-
-
 def longest_line(commands: list) -> str:
     longest = str()
     for command in commands:

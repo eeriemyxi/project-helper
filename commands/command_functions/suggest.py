@@ -1,4 +1,3 @@
-from typing import Text
 from discord_webhook import DiscordWebhook, DiscordEmbed
 from commands.command_handling import CommandAttrs
 from datetime import datetime

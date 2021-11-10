@@ -7,17 +7,14 @@ color = Color()
 
 
 class tools:
-    @staticmethod
     def fix_folder_path(path):
         path = pathlib.PurePath(path)
         fixed_folder = path.name.replace(" ", "-")
         return str(pathlib.PurePath(path.parent).joinpath(fixed_folder))
 
-    @staticmethod
     def fix_folder(folder_name):
         return folder_name.replace(" ", "-")
 
-    @staticmethod
     def get_user_input(
         text: str = "",
         predicate: Callable = None,

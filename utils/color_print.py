@@ -1,4 +1,4 @@
-from colorama import Fore, Style, init
+from colorama import Fore, init
 
 
 class Color:
@@ -30,5 +30,5 @@ class Color:
             Fore, color
         ), "Invalid color. It must be one of these: %s" % ", ".join(self.colors)
         print(getattr(Fore, color), end="")
-        print(*objects, end="")
-        print(Fore.RESET, **kwargs)
+        print(*objects, **kwargs)
+        print(Fore.RESET, end="")
