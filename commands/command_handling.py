@@ -39,6 +39,8 @@ class CommandHandler:
         self.color = Color()
         self.commands: List[CommandInfo] = list()
         self.current_directory = self.db.get("path")
+        self.cwd = self.current_directory
+        self.project_path = self.db.get("path")
         self.get_user_input = tools.get_user_input
 
     def add_command(
@@ -123,7 +125,7 @@ class CommandHandler:
         )
         self.log.info("Added command: %s", name)
 
-    def _load_command_from_spec(self, spec) -> None:
+    def _load_command_from_spec(self, spec, count) -> None:
         self.log.info("Importing: %s", spec.name)
         lib = importlib.util.module_from_spec(spec)
         self.log.info("Successfully imported: %s", spec.name)
@@ -135,7 +137,9 @@ class CommandHandler:
             self.log.info("Setup function found.")
             setup = getattr(lib, "setup")
             setup(self)
+            count += 1
             self.log.info("Successfully called setup function.")
+        return count
 
     def load_commands(self) -> int:
         """
@@ -144,15 +148,14 @@ class CommandHandler:
         Returns
         ------
         `int`:
-            Count of commands.
+            Count of file that the function loaded.
         """
         commands = iter_modules(["commands/command_functions"])
         count = 0
         for command in commands:
             package_path = f"commands.command_functions.{command.name}"
             spec = importlib.util.find_spec(package_path)
-            self._load_command_from_spec(spec)
-            count += 1
+            count = self._load_command_from_spec(spec, count)
         return count
 
     def _join_aliases_and_command(self, command: CommandInfo) -> List | Tuple:
@@ -190,13 +193,14 @@ class CommandHandler:
         self.log.info("Starting CommandHandler.")
         self.log.info("Loading commands.")
         count = self.load_commands()
-        self.log.info("Loading commands successful. Total commands: %s.", count)
+        commands_count = len(self.commands)
+        self.log.info("Loading commands successful. Files loaded: %s. Commands loaded: %s", count, commands_count)
         self.log.info("Starting main loop.")
         while True:
             self._handle_user_input()
 
     def _handle_user_input(self) -> None:
-        user_input = self.get_user_input()
+        user_input = self.get_user_input(self.current_directory)
         user_input_command_name = user_input.split()[0]
         args = user_input.split()[1:]
         self.log.info("User input: %s", user_input)

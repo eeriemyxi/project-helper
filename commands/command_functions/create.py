@@ -12,8 +12,7 @@ def create(attrs, *, name: str):
             return
         else:
             os.mkdir(path)
-            # attrs.db.dadd_project(name, "path", path)
-            attrs.db.dset(f"projects.{name}", {'path': path})
+            attrs.db.dset(f"projects.{name}", {"path": path})
             attrs.ins.color.print("green", "Project created successfully.")
             attrs.log.info("Project created.")
     else:

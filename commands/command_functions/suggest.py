@@ -13,7 +13,7 @@ def suggest(attrs: CommandAttrs, *, message: str) -> None:
         "green",
         f"Hello {name}, I see you want to suggest me something! I am thankful for your time.\nIf you want me to respond back to you, you have to tell me how to contact you.",
     )
-    embed = (DiscordEmbed(title='New suggestion!', description=message))
+    embed = DiscordEmbed(title="New suggestion!", description=message)
     embed.set_author(name=name)
     embed.set_footer(text="Time: {}".format(datetime.now().strftime("%c")))
     response = attrs.get_user_input(
@@ -31,11 +31,10 @@ def suggest(attrs: CommandAttrs, *, message: str) -> None:
     webhook = DiscordWebhook(url=WEBHOOK_URL)
     webhook.add_embed(embed)
     webhook.execute()
-    attrs.ins.color.print('green','Thanks.')
+    attrs.ins.color.print("green", "Thanks.")
+
 
 def setup(handler) -> None:
     handler.add_command(
-        instance=suggest,
-        description='Suggest me something.',
-        usage='<message>'
+        instance=suggest, description="Suggest me something.", usage="<message>"
     )

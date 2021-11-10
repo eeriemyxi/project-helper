@@ -69,16 +69,6 @@ class Database(PickleDB):
         self.db[name][key] = value
         self._autodumpdb()
         return True
-
-    # def dadd_project(self, project_name, key, value):
-    #     '''Add a new project.'''
-    #     self.db['projects'][project_name] = {key:value}
-    #     self._autodumpdb()
-    #     return True
-
-    # def dget_from_project(self, project_name, key):
-    #     '''Get value of a key that was added by `self.daddproject`'''
-    #     return self.db['projects'][project_name][key]
     
     def _dget(self, key: str):
         current = None
@@ -96,7 +86,6 @@ class Database(PickleDB):
             key = key.split('.') if '.' in key else [key]
             index = "".join([repr([i]) for i in key])
             exec(f'self.db{index} = {repr(value)}')
-            # return self.db[dict_name]
             self._autodumpdb()
         else:
             raise KeyError('Key not found.')

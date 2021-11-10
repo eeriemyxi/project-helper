@@ -28,7 +28,10 @@ class tools:
         on_exit: Callable = None,
     ) -> str:
         if restart:
-            assert len(restart) == 2, '`restart` must be a tuple of Callable and its arguments if used.'
+            assert (
+                len(restart) == 2
+            ), "`restart` must be a tuple of Callable and its arguments if used."
+
         def return_input():
             if confirm:
                 color.print("red", "Your input: %s" % user_input)
@@ -47,7 +50,7 @@ class tools:
                 on_exit() if on_exit else exit()
 
         input_text = lambda x=None: [
-            color.print("red", x or text, end=" " if (x or text) else ''),
+            color.print("magenta", x or text, end=" " if (x or text) else ""),
             color.print("cyan", ">>> ", end=""),
         ]
         input_text()
