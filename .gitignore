@@ -115,3 +115,5 @@ dmypy.json
 
 # Others
 /_old_code
+database.db
+/Testing
