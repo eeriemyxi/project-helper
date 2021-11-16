@@ -10,6 +10,9 @@ class Color:
         init()
         self.colors = [color for color in dir(Fore) if not color.startswith("_")]
 
+    def __getattr__(self, attr):
+        return getattr(Fore, attr.upper())
+
     def print(self, color: str, *objects, **kwargs) -> None:
         """
         Color prints text using the module `colorama`.
@@ -31,4 +34,4 @@ class Color:
         ), "Invalid color. It must be one of these: %s" % ", ".join(self.colors)
         print(getattr(Fore, color), end="")
         print(*objects, **kwargs)
-        print(Fore.RESET, end="")
+        init()

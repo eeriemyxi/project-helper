@@ -1,10 +1,11 @@
 from __future__ import annotations
+
 import importlib.util
 import inspect
 import pathlib
 from dataclasses import dataclass
 from pkgutil import iter_modules
-from typing import Callable, Dict, List, Tuple
+from typing import Callable
 
 from utils._logging import Logger
 from utils.color_print import Color
@@ -17,7 +18,7 @@ class CommandInfo:
     name: str
     description: str
     usage: str
-    alias: List[str]
+    alias: list[str]
     instance: Callable
     shortening: bool
 
@@ -39,7 +40,7 @@ class CommandHandler:
         self.logger = Logger(name="commands.log")
         self.log = self.logger.log
         self.color = Color()
-        self.commands: List[CommandInfo] = list()
+        self.commands: list[CommandInfo] = list()
         self.cwd = pathlib.Path(self.db.get("path"))
         self.project_path = pathlib.Path(self.db.get("path"))
         self.get_user_input = tools.get_user_input
@@ -52,7 +53,7 @@ class CommandHandler:
         desc: str = "Not specified",
         usage: str = "",
         name: str = None,
-        alias: List[str] = [],
+        alias: list[str] = [],
         shortening: bool = True,
     ) -> None:
         """
@@ -111,7 +112,7 @@ class CommandHandler:
         description: str,
         usage: str,
         name: str,
-        alias: List[str],
+        alias: list[str],
         shortening: bool,
     ) -> None:
         self.commands.append(
@@ -142,7 +143,7 @@ class CommandHandler:
             self.log.info("Successfully called setup function.")
         return count
 
-    def load_commands(self) -> int:
+    def load_commands(self) -> int[count]:
         """
         Loads all the commands from commands.command_functions.
 
@@ -159,22 +160,28 @@ class CommandHandler:
             count = self._load_command_from_spec(spec, count)
         return count
 
-    def _join_aliases_and_command(self, command: CommandInfo) -> List | Tuple:
+    def _join_aliases_and_command(self, command: CommandInfo) -> list:
         return command.alias + [command.name]
 
-    def _parse_arguments(self, args: list, command: CommandInfo) -> Tuple[List, Dict]:
+    def _parse_arguments(self, args: list, command: CommandInfo) -> tuple[list, dict]:
         self.log.info("Parsing arguments of %s", command.name)
         signature = inspect.signature(command.instance)
-        found = 0
+        found = False
         for param in signature.parameters.values():
             if param.kind == param.KEYWORD_ONLY and param.default is param.empty:
-                found = 1
+                found = True
                 values = list(signature.parameters.values())
                 index = values.index(param)
+                # We did `index - 1:` because we need the value the user provided to the first kwarg as well.
+                # If we do `index:`, it will slice after the first kwarg.
                 kwargs = {param.name: " ".join(args[index - 1 :])}
+                # "", {}, [], () are considered None
                 if not kwargs[param.name]:
                     kwargs = dict()
                 if len(args) > 1:
+                    # We are subtracting 2 because, len() returns the index in natural numbers;
+                    # So we have to subtract 1 to get the right index. We subtracted another 1 because,
+                    # we need to remove the last item from the list af args that is the kwarg.
                     args = args[: len(values) - 2]
                 else:
                     args = []
@@ -206,8 +213,10 @@ class CommandHandler:
 
     def _handle_user_input(self) -> None:
         user_input = self.get_user_input(str(self.cwd))
-        user_input_command_name = user_input.split()[0]
-        args = user_input.split()[1:]
+        if not user_input.strip(): return
+        user_input_split = user_input.split()
+        user_input_command_name = user_input_split[0]
+        args = user_input_split[1:]
         self.log.info("User input: %s", user_input)
         for command in self.commands:
             command_with_aliases = self._join_aliases_and_command(command)

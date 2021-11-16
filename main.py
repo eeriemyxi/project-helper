@@ -14,6 +14,7 @@ def main():
     startup.start()
     command_handler = CommandHandler(db)
     color.print("green", "Type `help` for help.")
+    color.print('magenta', 'Loading please wait.')
     command_handler.start()
 
 

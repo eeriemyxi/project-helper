@@ -47,7 +47,7 @@ class tools:
                 on_exit() if on_exit else exit()
 
         input_text = lambda x=None: [
-            color.print("magenta", x or text, end=" " if (x or text) else ""),
+            color.print("yellow", x or text, end=" " if (x or text) else ""),
             color.print("cyan", ">>> ", end=""),
         ]
         input_text()
@@ -65,3 +65,7 @@ class tools:
             return return_input()
         else:
             return return_input()
+
+    def debug_print(*objects):
+        for object in objects:
+            print(object)

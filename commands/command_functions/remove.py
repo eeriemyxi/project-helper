@@ -1,15 +1,17 @@
-# import os
 import shutil
+
+from utils.tools import tools
 
 
 def remove(attrs, project_name: str) -> None:
     log = attrs.log.info
+    project_name = tools.fix_folder(project_name)
     log(
         "Checking if %s exists. If it exists, it will be removed as requested.",
         project_name,
     )
     if attrs.db.dexists("projects", project_name):
-        path = attrs.db.dget_from_project(project_name, "path")
+        path = attrs.db.get('projects', project_name, "path")
         log("Path was found: %s", path)
         shutil.rmtree(path)
         attrs.db.dpop("projects", project_name)

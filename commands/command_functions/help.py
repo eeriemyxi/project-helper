@@ -1,12 +1,15 @@
-def longest_line(commands: list) -> str:
-    longest = str()
-    for command in commands:
-        desc = command.description
-        lines = desc.splitlines()
-        for line in lines:
-            if len(line) > len(longest):
-                longest = line
-    return longest
+from shutil import get_terminal_size
+from textwrap import dedent
+
+# def longest_line(commands: list) -> str:
+#     longest = str()
+#     for command in commands:
+#         desc = command.description
+#         lines = desc.splitlines()
+#         for line in lines:
+#             if len(line) > len(longest):
+#                 longest = line
+#     return longest
 
 
 def sort_commands(commands: list) -> list:
@@ -16,8 +19,8 @@ def sort_commands(commands: list) -> list:
 def help_command(attrs, command_name: str = None):
     color = attrs.instance.color
     commands = sort_commands(attrs.ins.commands)
-    longest_line_len = len(longest_line(commands))
     found = False
+    if command_name is None: color.print('green', 'You can do `help [command_name]` for more information about a command.')
     for command in commands:
         if command_name is not None:
             if not command_name.lower() in (
@@ -27,13 +30,9 @@ def help_command(attrs, command_name: str = None):
             else:
                 found = True
         fancy_line = "-" * len(command.name)
-        alias_string = ("| " + " | ".join(command.alias)) if command.alias else ""
-        color.print("white", "=" * longest_line_len)
-        color.print("yellow", command.name, alias_string, end=" ")
-        color.print("LIGHTRED_EX", command.usage)
-        color.print("cyan", fancy_line, ">", "Description:")
-        color.print("cyan", command.description)
-        color.print("white", "=" * longest_line_len)
+        alias_string = (" | " + " | ".join(command.alias)) if command.alias else ""
+        print(f"{color.yellow}{command.name}{alias_string} {color.lightred_ex}{command.usage}")
+        if command_name is not None: print(f"{color.cyan}{fancy_line} > Description:\n{command.description}")
     if command_name is not None and found is False:
         attrs.ins.color.print("red", "Command not found.")
 

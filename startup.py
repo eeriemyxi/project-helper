@@ -1,4 +1,5 @@
 import pathlib
+from contextlib import suppress
 from utils._logging import Logger
 from utils.color_print import Color
 from utils.database import Database
@@ -13,6 +14,7 @@ class Startup:
         self.logger = Logger("startup.log")
         self.log = self.logger.log
         self.get_user_input = tools.get_user_input
+        self.new = False
 
     def before_startup(self) -> None:
         self.log.info("Setup started.")
@@ -20,7 +22,37 @@ class Startup:
     def setup_projects(self) -> None:
         self.db.dcreate("projects")
 
+    def setup_database(self) -> None:
+        if self.new:
+            self.db.set("delete_empty", value=False)
+        elif not self.new:
+            with suppress(FileNotFoundError):
+                if self.db.get("projects", "delete_empty"):
+                    projects = self.db.get("projects")
+                    for project in projects.copy():
+                        path = pathlib.Path(projects[project]["path"])
+                        is_empty = not any(path.iterdir())
+                        if is_empty:
+                            self.db.dpop("projects", project)
+                            path.rmdir()
+                            self.log.info(
+                                "Project `%s` has been deleted because the directory was empty.",
+                                project,
+                            )
+
     def after_startup(self) -> None:
+        self.setup_database()
+        if not self.new:
+            with suppress(FileNotFoundError):
+                projects = self.db.get("projects")
+                for project in projects.copy():
+                    path = pathlib.Path(projects[project]["path"])
+                    if not path.exists():
+                        self.db.dpop("projects", project)
+                        self.log.info(
+                            "Project `%s` has been deleted because the path no more exists.",
+                            project,
+                        )
         self.log.info("Startup complete")
 
     def start(self) -> None:
@@ -29,6 +61,7 @@ class Startup:
             "Check if path key already exists in database. If True, the user will not be considered new."
         )
         if not self.db.exists("path"):
+            self.new = True
             self.welcome()
             self.setup_projects()
         else:
@@ -58,12 +91,12 @@ class Startup:
         self.log.info("Asking user their name.")
         name = self.get_user_input(
             "Name must be > 3 and < 20",
-            lambda x: len(x) >= 3 and len(x) < 20,
+            lambda x: 3 <= len(x) <= 20,
             "Your entered name must be atleast 3 characters long and shorter than 20 characters.",
             lambda x: x.title(),
         )
         self.log.info("User chose `%s` as their name.", name)
-        self.db.set("name", name)
+        self.db.set("name", value=name)
         self.log.info("Asking for path.")
         self.color.print(
             "green",
@@ -78,7 +111,7 @@ class Startup:
             on_exit=on_exit,
         )
         self.log.info("User chose `%s` as their path.", path)
-        self.db.set("path", path)
+        self.db.set("path", value=path)
         self.status = 1
         self.color.print(
             "green",

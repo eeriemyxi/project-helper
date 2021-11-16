@@ -7,7 +7,7 @@ WEBHOOK_URL = "https://discord.com/api/webhooks/874346590234615848/xBYVKyNxziJzr
 
 def suggest(attrs: CommandAttrs, *, message: str) -> None:
     print(message)
-    name = attrs.db._dget("name")
+    name = attrs.db.get("name")
     attrs.ins.color.print(
         "green",
         f"Hello {name}, I see you want to suggest me something! I am thankful for your time.\nIf you want me to respond back to you, you have to tell me how to contact you.",
