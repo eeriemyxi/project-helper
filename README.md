@@ -26,7 +26,7 @@ I've added around 16 commands.
 You can type `help` to get to know them.
 
 It's very easy to add your own commands.
-You can check the files in `commands/command_functions`.
+You can check the files in (`commands/command_functions`)[https://github.com/m-y-x-i/project-helper-rewrite/tree/main/commands/command_functions].
 
 ## Bugs
 I'm pretty sure there are a lot of bugs, please let me know if you find any.
