@@ -4,11 +4,6 @@
 This project gives you an organized way to start and manage your creative ideas.
 
 ## Features
-Windows users can create empty files very easily.
-
-- CMD: `echo.>filename.txt`
-
-- Project Helper: `touch filename.txt`
 
 Change current working directory by index.
 
